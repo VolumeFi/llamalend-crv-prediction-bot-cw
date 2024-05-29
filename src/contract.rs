@@ -61,7 +61,7 @@ pub mod execute {
     use super::*;
     use crate::msg::WinnerInfo;
     use crate::state::WITHDRAW_TIMESTAMP;
-    use crate::ContractError::{AllPending, Unauthorized};
+    use crate::ContractError::{Unauthorized};
     use ethabi::Address;
 
     pub fn set_paloma(
@@ -250,7 +250,7 @@ pub mod execute {
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, _env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
-        QueryMsg::GetEthJobId {} => to_json_binary(&query::get_job_id(deps)?),
+        QueryMsg::GetJobId {} => to_json_binary(&query::get_job_id(deps)?),
     }
 }
 
