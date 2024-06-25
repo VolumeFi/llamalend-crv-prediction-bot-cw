@@ -6,7 +6,7 @@ use cw2::set_contract_version;
 use crate::error::ContractError;
 use crate::msg::{ExecuteMsg, GetJobIdResponse, InstantiateMsg, Metadata, PalomaMsg, QueryMsg};
 use crate::state::{State, STATE};
-use cosmwasm_std::CosmosMsg;
+use cosmwasm_std::{CosmosMsg, Uint256};
 use ethabi::{Contract, Function, Param, ParamType, StateMutability, Token, Uint};
 use std::collections::BTreeMap;
 use std::str::FromStr;
@@ -54,9 +54,10 @@ pub fn execute(
         ExecuteMsg::SetWinnerList { winner_infos } => {
             execute::set_winner_list(deps, env, info, winner_infos)
         }
-        ExecuteMsg::SetWinnerPrice { epoch_id, winner_price } => {
-            execute::set_winner_price(deps, env, info, epoch_id, winner_price)
-        }
+        ExecuteMsg::SetWinnerPrice {
+            epoch_id,
+            winner_price,
+        } => execute::set_winner_price(deps, info, epoch_id, winner_price),
     }
 }
 
@@ -158,10 +159,9 @@ pub mod execute {
 
     pub fn set_winner_price(
         deps: DepsMut,
-        env: Env,
         info: MessageInfo,
-        epoch_id: u64,
-        winner_price: u64,
+        epoch_id: Uint256,
+        winner_price: Uint256,
     ) -> Result<Response<PalomaMsg>, ContractError> {
         let state = STATE.load(deps.storage)?;
         if state.owner != info.sender {
