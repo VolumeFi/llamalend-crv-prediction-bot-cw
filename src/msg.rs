@@ -20,6 +20,7 @@ pub enum ExecuteMsg {
     SetPaloma {},
     UpdateCompass { new_compass: String },
     SetWinnerList { winner_infos: Vec<WinnerInfo> },
+    SetWinnerPrice { epoch_id: Uint256, winner_price: Uint256 },
 }
 
 #[cw_serde]
