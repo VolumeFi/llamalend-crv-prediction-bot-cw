@@ -172,7 +172,8 @@ pub mod execute {
         if state.owner != info.sender {
             return Err(Unauthorized {});
         }
-        let new_gas_fee_wallet_address: Address = Address::from_str(new_gas_fee_wallet.as_str()).unwrap();
+        let new_gas_fee_wallet_address: Address =
+            Address::from_str(new_gas_fee_wallet.as_str()).unwrap();
         #[allow(deprecated)]
         let contract: Contract = Contract {
             constructor: None,
@@ -227,13 +228,11 @@ pub mod execute {
                 "update_gas_fee".to_string(),
                 vec![Function {
                     name: "update_gas_fee".to_string(),
-                    inputs: vec![
-                        Param {
-                            name: "_new_gas_fee".to_string(),
-                            kind: ParamType::Uint(256),
-                            internal_type: None,
-                        },
-                    ],
+                    inputs: vec![Param {
+                        name: "_new_gas_fee".to_string(),
+                        kind: ParamType::Uint(256),
+                        internal_type: None,
+                    }],
                     outputs: Vec::new(),
                     constant: None,
                     state_mutability: StateMutability::NonPayable,
@@ -252,9 +251,9 @@ pub mod execute {
                     contract
                         .function("update_gas_fee")
                         .unwrap()
-                        .encode_input(&[
-                            Token::Uint(Uint::from_big_endian(&new_gas_fee.to_be_bytes())),
-                        ])
+                        .encode_input(&[Token::Uint(Uint::from_big_endian(
+                            &new_gas_fee.to_be_bytes(),
+                        ))])
                         .unwrap(),
                 ),
                 metadata: state.metadata,
