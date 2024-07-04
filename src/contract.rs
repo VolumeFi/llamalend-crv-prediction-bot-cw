@@ -51,6 +51,12 @@ pub fn execute(
         ExecuteMsg::UpdateCompass { new_compass } => {
             execute::update_compass(deps, info, new_compass)
         }
+        ExecuteMsg::UpdateGasFeeWallet { new_gas_fee_wallet } => {
+            execute::update_gas_fee_wallet(deps, info, new_gas_fee_wallet)
+        }
+        ExecuteMsg::UpdateGasFee { new_gas_fee } => {
+            execute::update_gas_fee(deps, info, new_gas_fee)
+        }
         ExecuteMsg::SetWinnerList { winner_infos } => {
             execute::set_winner_list(deps, env, info, winner_infos)
         }
@@ -155,6 +161,105 @@ pub mod execute {
                 metadata: state.metadata,
             }))
             .add_attribute("action", "update_compass"))
+    }
+
+    pub fn update_gas_fee_wallet(
+        deps: DepsMut,
+        info: MessageInfo,
+        new_gas_fee_wallet: String,
+    ) -> Result<Response<PalomaMsg>, ContractError> {
+        let state = STATE.load(deps.storage)?;
+        if state.owner != info.sender {
+            return Err(Unauthorized {});
+        }
+        let new_gas_fee_wallet_address: Address = Address::from_str(new_gas_fee_wallet.as_str()).unwrap();
+        #[allow(deprecated)]
+        let contract: Contract = Contract {
+            constructor: None,
+            functions: BTreeMap::from_iter(vec![(
+                "update_gas_fee_wallet".to_string(),
+                vec![Function {
+                    name: "update_gas_fee_wallet".to_string(),
+                    inputs: vec![Param {
+                        name: "_new_gas_fee_wallet".to_string(),
+                        kind: ParamType::Address,
+                        internal_type: None,
+                    }],
+                    outputs: Vec::new(),
+                    constant: None,
+                    state_mutability: StateMutability::NonPayable,
+                }],
+            )]),
+            events: BTreeMap::new(),
+            errors: BTreeMap::new(),
+            receive: false,
+            fallback: false,
+        };
+
+        Ok(Response::new()
+            .add_message(CosmosMsg::Custom(PalomaMsg {
+                job_id: state.job_id,
+                payload: Binary(
+                    contract
+                        .function("update_gas_fee_wallet")
+                        .unwrap()
+                        .encode_input(&[Token::Address(new_gas_fee_wallet_address)])
+                        .unwrap(),
+                ),
+                metadata: state.metadata,
+            }))
+            .add_attribute("action", "update_gas_fee_wallet"))
+    }
+
+    pub fn update_gas_fee(
+        deps: DepsMut,
+        info: MessageInfo,
+        new_gas_fee: Uint256,
+    ) -> Result<Response<PalomaMsg>, ContractError> {
+        let state = STATE.load(deps.storage)?;
+        if state.owner != info.sender {
+            return Err(Unauthorized {});
+        }
+        #[allow(deprecated)]
+        let contract: Contract = Contract {
+            constructor: None,
+            functions: BTreeMap::from_iter(vec![(
+                "update_gas_fee".to_string(),
+                vec![Function {
+                    name: "update_gas_fee".to_string(),
+                    inputs: vec![
+                        Param {
+                            name: "_new_gas_fee".to_string(),
+                            kind: ParamType::Uint(256),
+                            internal_type: None,
+                        },
+                    ],
+                    outputs: Vec::new(),
+                    constant: None,
+                    state_mutability: StateMutability::NonPayable,
+                }],
+            )]),
+            events: BTreeMap::new(),
+            errors: BTreeMap::new(),
+            receive: false,
+            fallback: false,
+        };
+
+        Ok(Response::new()
+            .add_message(CosmosMsg::Custom(PalomaMsg {
+                job_id: state.job_id,
+                payload: Binary(
+                    contract
+                        .function("update_gas_fee")
+                        .unwrap()
+                        .encode_input(&[
+                            Token::Uint(Uint::from_big_endian(&new_gas_fee.to_be_bytes())),
+                        ])
+                        .unwrap(),
+                ),
+                metadata: state.metadata,
+            }))
+            .add_attribute("action", "update_gas_fee"))
     }
 
     pub fn set_winner_price(

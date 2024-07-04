@@ -21,6 +21,12 @@ pub enum ExecuteMsg {
     UpdateCompass {
         new_compass: String,
     },
+    UpdateGasFeeWallet {
+        new_gas_fee_wallet: String,
+    },
+    UpdateGasFee {
+        new_gas_fee: Uint256,
+    },
     SetWinnerList {
         winner_infos: Vec<WinnerInfo>,
     },
