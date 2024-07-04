@@ -51,9 +51,9 @@ pub fn execute(
         ExecuteMsg::UpdateCompass { new_compass } => {
             execute::update_compass(deps, info, new_compass)
         }
-        ExecuteMsg::UpdateSpamFeeWallet { new_spam_fee_wallet } => {
-            execute::update_spam_fee_wallet(deps, info, new_spam_fee_wallet)
-        }
+        ExecuteMsg::UpdateSpamFeeWallet {
+            new_spam_fee_wallet,
+        } => execute::update_spam_fee_wallet(deps, info, new_spam_fee_wallet),
         ExecuteMsg::UpdateSpamFee { new_spam_fee } => {
             execute::update_spam_fee(deps, info, new_spam_fee)
         }
